@@ -4,6 +4,7 @@ const app = express();
 const logger = require("morgan");
 const users = require("./routes/users");
 const cookieParser = require("cookie-parser");
+var cors = require("cors");
 
 //DB connection
 const mongoose = require("mongoose");
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(logger("dev"));
 app.use("/", users);
+app.use(cors());
 
 app.listen(process.env.PORT, () =>
   console.log(`Ready on port ${process.env.PORT}`)
