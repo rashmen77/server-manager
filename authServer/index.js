@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const logger = require("morgan");
 const users = require("./routes/users");
+const cookieParser = require("cookie-parser");
 
 //DB connection
 const mongoose = require("mongoose");
@@ -15,6 +16,7 @@ db.on("error", error => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(logger("dev"));
 app.use("/", users);
 
