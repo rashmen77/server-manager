@@ -3,6 +3,9 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
+var bodyParser = require("body-parser");
+
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //middleware to find user by username
 const getUser = async (req, res, next) => {
@@ -20,7 +23,8 @@ const getUser = async (req, res, next) => {
 };
 
 //sign up user
-router.post("/signup", async (req, res) => {
+router.post("/signup", urlencodedParser, async (req, res) => {
+  console.log(req.body);
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({

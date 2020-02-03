@@ -49,10 +49,10 @@ function UnconnectedSignup({ dispatch }) {
     let data = new FormData();
     data.append("username", username);
     data.append("password", password);
-
+    console.log("data from signup ", data);
     let response = await fetch("http://localhost:4000/signup", {
       method: "POST",
-      body: JSON.stringify(data)
+      body: data
     });
     let body = await response.text();
     console.log("/signup response", body);

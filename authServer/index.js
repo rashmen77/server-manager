@@ -16,11 +16,20 @@ const db = mongoose.connection;
 db.on("error", error => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
 
-app.use(express.json());
-app.use(cookieParser());
+// ideally from an environmental variable
+const allowedOrigins = ["http://localhost:3000"];
+app.use(
+  cors({
+    origin: allowedOrigins
+  })
+);
+
 app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use("/", users);
-app.use(cors());
 
 app.listen(process.env.PORT, () =>
   console.log(`Ready on port ${process.env.PORT}`)
