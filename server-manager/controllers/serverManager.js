@@ -23,5 +23,5 @@ exports.createServer = async (req, res) => {
 exports.getAllServer = async (req, res) => {
   const allServers = await Server.find();
   console.log("server", allServers);
-  return res.json({ success: false, data: allServers });
+  return res.json({ success: true, data: allServers });
 };

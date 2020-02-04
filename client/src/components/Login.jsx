@@ -80,13 +80,13 @@ const UnconnectedLogin = ({ lgin, dispatch }) => {
 
   const renderRedirect = () => {
     if (lgin) {
-      return;
+      return <Redirect to="/serverManager" />;
     }
   };
 
   return (
     <>
-      {renderRedirect()}
+      {/* {renderRedirect()} */}
       <Container maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>

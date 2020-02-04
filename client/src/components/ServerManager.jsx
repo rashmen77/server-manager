@@ -40,7 +40,7 @@ export default function ServerManager() {
       let responseBody = await response.text();
       let payload = JSON.parse(responseBody);
       console.log("servers", payload);
-      setServer(payload.data);
+      // setServer(payload.data);
     }
   };
 
