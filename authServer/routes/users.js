@@ -3,7 +3,6 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
-var bodyParser = require("body-parser");
 
 function generateAccessToken(user) {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -17,7 +16,7 @@ const getUser = async (req, res, next) => {
   try {
     User.findOne({ username }, (err, user) => {
       if (err) {
-        return res.status(422).send({ errors: normalizeErrors(err.errors) });
+        return res.status(422).send({ success: false, message: "Error!" });
       }
       if (!user) {
         return res
@@ -35,7 +34,7 @@ const getUser = async (req, res, next) => {
 };
 //login user
 router.post("/login", getUser, async (req, res) => {
-  const password = req.body.password;
+  const { password } = req.body;
   try {
     if (await bcrypt.compare(password, res.user.password)) {
       let user = { usernameID: res.user._id };
@@ -51,7 +50,6 @@ router.post("/login", getUser, async (req, res) => {
 
 //sign up user
 router.post("/signup", async (req, res) => {
-  console.log("req.body", req.body);
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({

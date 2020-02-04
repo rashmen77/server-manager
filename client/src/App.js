@@ -1,8 +1,10 @@
 import React from "react";
 import { Route, BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import Login from "./components/Login.jsx";
+// import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
+import Login from "./components/Login.jsx";
+import ServerManager from "./components/ServerManager.jsx";
 
 const UnconnectedApp = ({ dispatch }) => {
   // let checkLogined = async () => {
@@ -31,6 +33,11 @@ const UnconnectedApp = ({ dispatch }) => {
   return (
     <BrowserRouter>
       <Route exact={true} path="/" component={Login}></Route>
+      <Route
+        exact={true}
+        path="/serverManager"
+        component={ServerManager}
+      ></Route>
       <Route exact={true} path="/signup" component={Signup}></Route>
     </BrowserRouter>
   );
