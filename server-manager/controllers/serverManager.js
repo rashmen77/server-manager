@@ -1,7 +1,7 @@
 const Server = require("../models/serverManager");
 
 exports.createServer = async (req, res) => {
-  const { servername, publicDNS, ipv4, country } = req.body;
+  const { servername, publicDNS, ipv4, country } = req.body.serverDetail;
 
   const server = new Server({
     servername: servername,
@@ -16,7 +16,7 @@ exports.createServer = async (req, res) => {
     }
     const allServers = await Server.find();
 
-    return res.json({ success: false, payload: allServers });
+    return res.json({ success: false, data: allServers });
   });
 };
 

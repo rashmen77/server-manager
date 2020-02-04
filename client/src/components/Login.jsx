@@ -86,7 +86,7 @@ const UnconnectedLogin = ({ lgin, dispatch }) => {
 
   return (
     <>
-      {/* {renderRedirect()} */}
+      {renderRedirect()}
       <Container maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
