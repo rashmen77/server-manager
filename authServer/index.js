@@ -18,11 +18,8 @@ db.on("error", error => console.error(error));
 db.once("open", () => console.log("Connected to Database"));
 
 app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+
+//Secure approach
 const allowedOrigins = ["http://localhost:3000"];
 app.use(
   cors({
@@ -30,10 +27,12 @@ app.use(
   })
 );
 
+//middlewares
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+//routes
 app.use("/", users);
 
 app.listen(process.env.PORT, () =>

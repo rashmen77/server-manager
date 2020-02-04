@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const UnconnectedLogin = ({ dispatch }) => {
-  const [emailAddress, setEmailAddress] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const alert = useAlert();
   const classes = useStyles();
@@ -41,33 +41,39 @@ const UnconnectedLogin = ({ dispatch }) => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    if (emailAddress === "" || password === "") {
-      alert.show("email address / password missing");
+    if (username === "" || password === "") {
+      alert.show("username address / password missing");
       return;
     }
 
-    let data = new FormData();
+    let response = await fetch("http://localhost:4000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        password
+      })
+    });
 
-    data.append("username", emailAddress);
-    data.append("password", password);
+    let responsebody = await response.text();
 
-    let response = await fetch("/login", { method: "POST", body: data });
-    let body = await response.text();
+    let payload = JSON.parse(responsebody);
+    console.log("/login response", payload);
 
-    console.log("/login response", body);
-
-    body = JSON.parse(body);
-
-    if (body.success) {
+    if (payload.success) {
+      localStorage.setItem("token", payload.jwt);
       dispatch({
         type: "login-success",
-        value: body.data
+        value: payload.user
       });
+      alert.show(`login-success`);
     } else {
       dispatch({
         type: "login-fail"
       });
-      return alert.show("Login-failed");
+      alert.show(`Login-failed ${payload.message}`);
     }
   };
 
@@ -85,12 +91,12 @@ const UnconnectedLogin = ({ dispatch }) => {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="username Address"
+            name="username"
+            autoComplete="username"
             autoFocus
-            onChange={e => setEmailAddress(e.target.value)}
+            onChange={e => setUsername(e.target.value)}
           />
           <TextField
             variant="outlined"

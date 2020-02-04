@@ -46,16 +46,18 @@ function UnconnectedSignup({ dispatch }) {
       return;
     }
 
-    let data = new FormData();
-    data.append("username", username);
-    data.append("password", password);
-    console.log("data from signup ", data);
-    let response = await fetch("http://localhost:4000/signup", {
+    let data = {
+      username,
+      password
+    };
+    const response = await fetch("http://localhost:4000/signup", {
       method: "POST",
-      body: data
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
     });
     let body = await response.text();
-    console.log("/signup response", body);
 
     body = JSON.parse(body);
     if (body.success) {
@@ -68,7 +70,7 @@ function UnconnectedSignup({ dispatch }) {
       dispatch({
         type: "login-fail"
       });
-      alert.show(`SignUp failure ${body.message}`);
+      alert.show(`SignUp failure: ${body.message}`);
     }
   };
 
