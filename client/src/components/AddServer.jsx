@@ -22,8 +22,9 @@ export default function AddServer({ onHide, serverFunc }) {
     <>
       <TableRow>
         <TableCell align="left">
-          <FaWindowClose onClick={onHide} />
+          <FaWindowClose className="fa-icons" onClick={onHide} />
           <FaCheckSquare
+            className="fa-icons"
             onClick={() => {
               serverFunc(createServerDetail());
             }}

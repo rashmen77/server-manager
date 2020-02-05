@@ -7,6 +7,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { useAlert } from "react-alert";
 
 import AddServerRow from "./AddServer.jsx";
 
@@ -20,7 +23,8 @@ const useStyles = makeStyles({
 
 const token = localStorage.token;
 
-export default function ServerManager() {
+function UnconnectedServerManager({ lgin }) {
+  const alert = useAlert();
   const classes = useStyles();
   const [servers, setServer] = useState(null);
   const [showAddServer, setShowAdd] = useState(false);
@@ -40,7 +44,6 @@ export default function ServerManager() {
   };
 
   const getServers = async () => {
-    console.log("token", token);
     if (token) {
       let response = await fetch("http://localhost:9000/getAllServer", {
         method: "GET",
@@ -52,8 +55,9 @@ export default function ServerManager() {
       });
       let responseBody = await response.text();
       let payload = JSON.parse(responseBody);
-      console.log("servers", payload);
       setServer(payload.data);
+    } else {
+      alert.show("Session expired");
     }
   };
 
@@ -72,9 +76,10 @@ export default function ServerManager() {
       });
       let responseBody = await response.text();
       let payload = JSON.parse(responseBody);
-      console.log("servers", payload);
       setServer(payload.data);
       handleServerAddHide();
+    } else {
+      alert.show("Session expired");
     }
   };
 
@@ -94,8 +99,9 @@ export default function ServerManager() {
 
       let responseBody = await response.text();
       let payload = JSON.parse(responseBody);
-      console.log("delete server", payload);
       setServer(payload.data);
+    } else {
+      alert.show("Session expired");
     }
   };
 
@@ -121,83 +127,105 @@ export default function ServerManager() {
       let payload = JSON.parse(responseBody);
       console.log("update server", payload);
       setServer(payload.data);
+    } else {
+      alert.show("Session expired");
     }
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" colSpan={3}>
-              <h1>Server Manager</h1>
-            </TableCell>
-            <TableCell align="right" colSpan={3}>
-              <button
-                onClick={() => {
-                  setShowAdd(true);
-                }}
-              >
-                <h3>Add Server</h3>
-              </button>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableHead>
-          <TableRow>
-            <TableCell>Actions</TableCell>
-            <TableCell align="right">Server Name</TableCell>
-            <TableCell align="right">Instance ID</TableCell>
-            <TableCell align="right">Public DNS</TableCell>
-            <TableCell align="right">IPv4 public IP</TableCell>
-            <TableCell align="right">Country</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {servers &&
-            !showUpdateServer &&
-            servers.map(row => (
-              <TableRow key={row._id}>
-                <TableCell>
-                  <FaEdit
-                    onClick={() => {
-                      setUpdateID(row.id);
-                      setShowUpdate(true);
-                    }}
-                  />
-                  <FaTrash
-                    onClick={() => {
-                      console.log("dsdsd", updateID);
-                      deleteServer(row._id);
-                    }}
-                  />
+    <>
+      {lgin ? (
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell align="left" colSpan={3}>
+                  <h1>Server Manager</h1>
                 </TableCell>
-                <TableCell align="right">{row.servername}</TableCell>
-                <TableCell align="right">{row._id.substring(0, 15)}</TableCell>
-                <TableCell align="right">{row.publicDNS}</TableCell>
-                <TableCell align="right">{row.ipv4}</TableCell>
-                <TableCell align="right">{row.country}</TableCell>
+                <TableCell align="right" colSpan={3}>
+                  <button
+                    onClick={() => {
+                      setShowAdd(true);
+                    }}
+                  >
+                    <h3>Add Server</h3>
+                  </button>
+                </TableCell>
               </TableRow>
-            ))}
-          {showUpdateServer ? (
-            <AddServerRow
-              onHide={handleServerUpdateHide}
-              serverFunc={updateServer}
-            />
-          ) : (
-            ""
-          )}
+            </TableHead>
+            <TableHead>
+              <TableRow>
+                <TableCell>Actions</TableCell>
+                <TableCell align="right">Server Name</TableCell>
+                <TableCell align="right">Instance ID</TableCell>
+                <TableCell align="right">Public DNS</TableCell>
+                <TableCell align="right">IPv4 public IP</TableCell>
+                <TableCell align="right">Country</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {servers &&
+                !showUpdateServer &&
+                servers.map(row => (
+                  <TableRow key={row._id}>
+                    <TableCell>
+                      <FaEdit
+                        className="fa-icons"
+                        onClick={() => {
+                          setUpdateID(row.id);
+                          setShowUpdate(true);
+                        }}
+                      />
+                      <FaTrash
+                        className="fa-icons"
+                        onClick={() => {
+                          deleteServer(row._id);
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="right">{row.servername}</TableCell>
+                    <TableCell align="right">
+                      {row._id.substring(0, 15)}
+                    </TableCell>
+                    <TableCell align="right">{row.publicDNS}</TableCell>
+                    <TableCell align="right">{row.ipv4}</TableCell>
+                    <TableCell align="right">{row.country}</TableCell>
+                  </TableRow>
+                ))}
+              {showUpdateServer ? (
+                <AddServerRow
+                  onHide={handleServerUpdateHide}
+                  serverFunc={updateServer}
+                />
+              ) : (
+                ""
+              )}
 
-          {showAddServer ? (
-            <AddServerRow
-              onHide={handleServerAddHide}
-              serverFunc={appendToServer}
-            />
-          ) : (
-            ""
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+              {showAddServer ? (
+                <AddServerRow
+                  onHide={handleServerAddHide}
+                  serverFunc={appendToServer}
+                />
+              ) : (
+                ""
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <>
+          <div>
+            <h1>Not ALLOWED</h1>
+            <Link to="/">Sign in</Link>
+          </div>
+        </>
+      )}
+    </>
   );
 }
+let mapStateToProps = state => {
+  return { lgin: state.loggedIn };
+};
+let ServerManager = connect(mapStateToProps)(UnconnectedServerManager);
+
+export default ServerManager;

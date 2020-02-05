@@ -32,6 +32,7 @@ const getUser = async (req, res, next) => {
       .send({ success: false, message: "Wrong Username or Password" });
   }
 };
+
 //login user
 router.post("/login", getUser, async (req, res) => {
   const { password } = req.body;
@@ -61,11 +62,6 @@ router.post("/signup", async (req, res) => {
   } catch (err) {
     res.send(JSON.stringify({ message: err.message }));
   }
-});
-
-//logout
-router.delete("/logout", (req, res) => {
-  res.clearCookie("ßaccessToken");
 });
 
 module.exports = router;

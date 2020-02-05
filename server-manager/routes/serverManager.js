@@ -13,10 +13,8 @@ const authenticateToken = async (req, res, next) => {
     return res.status(401).send({ success: false, message: "Error!" });
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    console.log(err);
     if (err) return res.status(401).send({ success: false, message: "Error!" });
     req.userID = user.usernameID;
-    console.log("userID", req.userID);
     next();
   });
 };
@@ -24,8 +22,10 @@ const authenticateToken = async (req, res, next) => {
 //middleware to find server by ID
 const getServer = async (req, res, next) => {
   let server;
+
   try {
     server = await Server.findById(req.params.id);
+
     if (server === null) {
       return res
         .status(404)

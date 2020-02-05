@@ -3,8 +3,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import { Link, Redirect } from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
@@ -60,7 +59,6 @@ const UnconnectedLogin = ({ lgin, dispatch }) => {
     let responsebody = await response.text();
 
     let payload = JSON.parse(responsebody);
-    console.log("/login response", payload);
 
     if (payload.success) {
       localStorage.setItem("token", payload.jwt);
@@ -93,7 +91,7 @@ const UnconnectedLogin = ({ lgin, dispatch }) => {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography variant="h5">Sign in</Typography>
+          <Typography variant="h5">Admin Sign in</Typography>
           <form className={classes.form} noValidate>
             <TextField
               variant="outlined"
@@ -130,13 +128,6 @@ const UnconnectedLogin = ({ lgin, dispatch }) => {
             >
               Sign In
             </Button>
-            <Grid container>
-              <Grid item>
-                <Link to="/signup" variant="body2">
-                  Don't have an account? Sign Up
-                </Link>
-              </Grid>
-            </Grid>
           </form>
         </div>
       </Container>

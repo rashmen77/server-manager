@@ -14,6 +14,7 @@ exports.createServer = async (req, res) => {
     if (err) {
       return res.status(422).send({ success: false, message: "Bad data!" });
     }
+
     const allServers = await Server.find();
 
     return res.json({ success: true, data: allServers });
@@ -22,7 +23,7 @@ exports.createServer = async (req, res) => {
 
 exports.getAllServer = async (req, res) => {
   const allServers = await Server.find();
-  console.log("server", allServers);
+
   return res.json({ success: true, data: allServers });
 };
 
