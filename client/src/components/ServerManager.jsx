@@ -14,7 +14,7 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 900
+    minWidth: 650
   }
 });
 
@@ -23,14 +23,20 @@ const token = localStorage.token;
 export default function ServerManager() {
   const classes = useStyles();
   const [servers, setServer] = useState(null);
-  const [showAddServerModal, setShowModal] = useState(false);
+  const [showAddServer, setShowAdd] = useState(false);
+  const [showUpdateServer, setShowUpdate] = useState(false);
+  const [updateID, setUpdateID] = useState("");
 
   useEffect(() => {
     getServers();
   }, []);
 
   const handleServerAddHide = () => {
-    setShowModal(false);
+    setShowAdd(false);
+  };
+
+  const handleServerUpdateHide = () => {
+    setShowUpdate(false);
   };
 
   const getServers = async () => {
@@ -52,7 +58,6 @@ export default function ServerManager() {
   };
 
   const appendToServer = async serverDetail => {
-    console.log("server details", serverDetail);
     if (token) {
       let response = await fetch("http://localhost:9000/createServer", {
         method: "POST",
@@ -75,6 +80,47 @@ export default function ServerManager() {
 
   const deleteServer = async serverID => {
     if (token) {
+      let response = await fetch(
+        `http://localhost:9000/deleteServer/${serverID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      let responseBody = await response.text();
+      let payload = JSON.parse(responseBody);
+      console.log("delete server", payload);
+      setServer(payload.data);
+    }
+  };
+
+  const updateServer = async serverDetail => {
+    console.log("uppdate server ", serverDetail, updateID);
+    if (token) {
+      let response = await fetch(
+        `http://localhost:9000/updateServer/${updateID}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            serverDetail
+          })
+        }
+      );
+
+      let responseBody = await response.text();
+      let payload = JSON.parse(responseBody);
+      console.log("update server", payload);
+      setServer(payload.data);
     }
   };
 
@@ -83,13 +129,16 @@ export default function ServerManager() {
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="right" colSpan={6}>
+            <TableCell align="left" colSpan={3}>
+              <h1>Server Manager</h1>
+            </TableCell>
+            <TableCell align="right" colSpan={3}>
               <button
                 onClick={() => {
-                  setShowModal(true);
+                  setShowAdd(true);
                 }}
               >
-                Add Server
+                <h3>Add Server</h3>
               </button>
             </TableCell>
           </TableRow>
@@ -106,16 +155,19 @@ export default function ServerManager() {
         </TableHead>
         <TableBody>
           {servers &&
+            !showUpdateServer &&
             servers.map(row => (
               <TableRow key={row._id}>
                 <TableCell>
                   <FaEdit
                     onClick={() => {
-                      console.log("HELLO");
+                      setUpdateID(row.id);
+                      setShowUpdate(true);
                     }}
                   />
                   <FaTrash
                     onClick={() => {
+                      console.log("dsdsd", updateID);
                       deleteServer(row._id);
                     }}
                   />
@@ -127,10 +179,19 @@ export default function ServerManager() {
                 <TableCell align="right">{row.country}</TableCell>
               </TableRow>
             ))}
-          {showAddServerModal ? (
+          {showUpdateServer ? (
+            <AddServerRow
+              onHide={handleServerUpdateHide}
+              serverFunc={updateServer}
+            />
+          ) : (
+            ""
+          )}
+
+          {showAddServer ? (
             <AddServerRow
               onHide={handleServerAddHide}
-              addServer={appendToServer}
+              serverFunc={appendToServer}
             />
           ) : (
             ""

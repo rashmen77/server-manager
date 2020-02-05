@@ -8,7 +8,7 @@ const inputStyle = {
   width: "70px"
 };
 
-export default function AddServer({ onHide, addServer }) {
+export default function AddServer({ onHide, serverFunc }) {
   const [servername, setServerName] = useState("");
   const [publicDNS, setPublicDNS] = useState("");
   const [ipv4, setIpv4] = useState("");
@@ -25,7 +25,7 @@ export default function AddServer({ onHide, addServer }) {
           <FaWindowClose onClick={onHide} />
           <FaCheckSquare
             onClick={() => {
-              addServer(createServerDetail());
+              serverFunc(createServerDetail());
             }}
           />
         </TableCell>
@@ -38,7 +38,7 @@ export default function AddServer({ onHide, addServer }) {
             }}
           />
         </TableCell>
-        <TableCell align="right">INSTANCE ID</TableCell>
+        <TableCell align="right">xxxxxxxxxxxxxxx</TableCell>
         <TableCell align="right">
           <input
             style={inputStyle}
