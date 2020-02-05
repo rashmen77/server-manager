@@ -9,8 +9,9 @@ const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null)
+  if (token == null) {
     return res.status(401).send({ success: false, message: "Error!" });
+  }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) return res.status(401).send({ success: false, message: "Error!" });
@@ -54,7 +55,7 @@ router.delete(
 
 //update server
 router.patch(
-  "/updateServer",
+  "/updateServer/:id",
   authenticateToken,
   getServer,
   ServerCtrl.updateServer

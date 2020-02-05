@@ -41,25 +41,40 @@ exports.updateServer = async (req, res) => {
   const { servername, publicDNS, ipv4, country } = req.body.serverDetail;
 
   if (servername === "") {
-    res.server.servername = servername;
+    servername = res.server.servername;
   }
 
   if (publicDNS === "") {
-    res.server.publicDNS = publicDNS;
+    publicDNS = res.server.publicDNS;
   }
 
   if (ipv4 === "") {
-    res.server.ipv4 = ipv4;
+    ipv4 = res.server.ipv4 = ipv4;
   }
 
   if (country === "") {
-    res.server.country = country;
+    country = res.server.country;
   }
 
+  const newData = {
+    servername: servername,
+    publicDNS: publicDNS,
+    ipv4: ipv4,
+    country: country
+  };
+
   try {
-    await res.sever.save();
-    const updatedServer = await Server.find();
-    return res.json({ success: true, data: updatedServer });
+    Server.findOneAndUpdate(
+      { _id: req.params.id },
+      newData,
+      async (err, server) => {
+        if (err) {
+          return res.status(500).json({ success: false, message: err.message });
+        }
+        const allServers = await Server.find();
+        return res.json({ success: true, data: allServers });
+      }
+    );
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

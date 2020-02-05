@@ -106,12 +106,11 @@ function UnconnectedServerManager({ lgin }) {
   };
 
   const updateServer = async serverDetail => {
-    console.log("uppdate server ", serverDetail, updateID);
     if (token) {
       let response = await fetch(
         `http://localhost:9000/updateServer/${updateID}`,
         {
-          method: "DELETE",
+          method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -125,8 +124,8 @@ function UnconnectedServerManager({ lgin }) {
 
       let responseBody = await response.text();
       let payload = JSON.parse(responseBody);
-      console.log("update server", payload);
       setServer(payload.data);
+      handleServerUpdateHide();
     } else {
       alert.show("Session expired");
     }
@@ -144,6 +143,7 @@ function UnconnectedServerManager({ lgin }) {
                 </TableCell>
                 <TableCell align="right" colSpan={3}>
                   <button
+                    className="server-manager-button"
                     onClick={() => {
                       setShowAdd(true);
                     }}
@@ -167,30 +167,32 @@ function UnconnectedServerManager({ lgin }) {
               {servers &&
                 !showUpdateServer &&
                 servers.map(row => (
-                  <TableRow key={row._id}>
-                    <TableCell>
-                      <FaEdit
-                        className="fa-icons"
-                        onClick={() => {
-                          setUpdateID(row.id);
-                          setShowUpdate(true);
-                        }}
-                      />
-                      <FaTrash
-                        className="fa-icons"
-                        onClick={() => {
-                          deleteServer(row._id);
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="right">{row.servername}</TableCell>
-                    <TableCell align="right">
-                      {row._id.substring(0, 15)}
-                    </TableCell>
-                    <TableCell align="right">{row.publicDNS}</TableCell>
-                    <TableCell align="right">{row.ipv4}</TableCell>
-                    <TableCell align="right">{row.country}</TableCell>
-                  </TableRow>
+                  <>
+                    <TableRow key={row._id}>
+                      <TableCell>
+                        <FaEdit
+                          className="fa-icons"
+                          onClick={() => {
+                            setUpdateID(row._id);
+                            setShowUpdate(true);
+                          }}
+                        />
+                        <FaTrash
+                          className="fa-icons"
+                          onClick={() => {
+                            deleteServer(row._id);
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell align="right">{row.servername}</TableCell>
+                      <TableCell align="right">
+                        {row._id.substring(0, 15)}
+                      </TableCell>
+                      <TableCell align="right">{row.publicDNS}</TableCell>
+                      <TableCell align="right">{row.ipv4}</TableCell>
+                      <TableCell align="right">{row.country}</TableCell>
+                    </TableRow>
+                  </>
                 ))}
               {showUpdateServer ? (
                 <AddServerRow
