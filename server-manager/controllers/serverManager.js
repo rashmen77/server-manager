@@ -1,7 +1,12 @@
-const Server = require("../models/serverManager");
+const Server = require('../models/serverManager');
 
 exports.createServer = async (req, res) => {
-  const { servername, publicDNS, ipv4, country } = req.body.serverDetail;
+  const {
+    servername,
+    publicDNS,
+    ipv4,
+    country
+  } = req.body.serverDetail;
 
   const server = new Server({
     servername: servername,
@@ -12,7 +17,9 @@ exports.createServer = async (req, res) => {
 
   server.save(async err => {
     if (err) {
-      return res.status(422).send({ success: false, message: "Bad data!" });
+      return res
+        .status(422)
+        .send({ success: false, message: 'Bad data!' });
     }
 
     const allServers = await Server.find();
@@ -33,26 +40,33 @@ exports.deleteServer = async (req, res) => {
     const allServers = await Server.find();
     return res.json({ success: true, data: allServers });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: error.message });
   }
 };
 
 exports.updateServer = async (req, res) => {
-  const { servername, publicDNS, ipv4, country } = req.body.serverDetail;
+  let {
+    servername,
+    publicDNS,
+    ipv4,
+    country
+  } = req.body.serverDetail;
 
-  if (servername === "") {
+  if (servername === '') {
     servername = res.server.servername;
   }
 
-  if (publicDNS === "") {
+  if (publicDNS === '') {
     publicDNS = res.server.publicDNS;
   }
 
-  if (ipv4 === "") {
-    ipv4 = res.server.ipv4 = ipv4;
+  if (ipv4 === '') {
+    ipv4 = res.server.ipv4;
   }
 
-  if (country === "") {
+  if (country === '') {
     country = res.server.country;
   }
 
@@ -69,13 +83,20 @@ exports.updateServer = async (req, res) => {
       newData,
       async (err, server) => {
         if (err) {
-          return res.status(500).json({ success: false, message: err.message });
+          return res
+            .status(500)
+            .json({ success: false, message: err.message });
         }
         const allServers = await Server.find();
-        return res.json({ success: true, data: allServers });
+        return res.json({
+          success: true,
+          data: allServers
+        });
       }
     );
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: error.message });
   }
 };
